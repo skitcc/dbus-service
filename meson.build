@@ -11,6 +11,9 @@ project(
 
 sdbus_dep = dependency('sdbus-c++')
 
+subdir('cfgRead')
+
+
 
 src = [
     'main.cpp',
@@ -18,6 +21,7 @@ src = [
 
 deps = [
     sdbus_dep,
+    reader_core_dep,
 ]
 
 

@@ -8,23 +8,20 @@
 
 class ConcreteReader final: public BaseReader {
 public:
-    ConcreteReader(std::string_view filename);
-    ~ConcreteReader();
-
-    std::pair<std::string, Variant> nextField() override;
+    ConcreteReader(const std::string_view& filename);
+    Field nextField() override;
 
 private:
     std::ifstream m_stream;
 
     cfgType readMeta();
-    std::queue<std::pair<std::string, Variant>> m_fieldQueue;
+    std::queue<Field> m_fieldQueue;
 
     void readField(std::stringstream& stream);
 
     void lineIterator();
 
-    friend std::istream& operator>>(std::istream& stream, Variant& val);
-
+    friend std::istream& operator>>(std::istream& stream, VariantValue& val);
 };
 
 

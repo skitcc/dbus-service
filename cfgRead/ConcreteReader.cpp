@@ -1,48 +1,48 @@
 #include "ConcreteReader.h"
-#include <exception>
+#include "exceptions/Exceptions.h"
 
 namespace {
     constexpr std::string_view META_HEADER = "--META--";
     constexpr std::string_view META_FOOTER = "--------";
 }
 
-std::istream& operator>>(std::istream& stream, typename ConcreteReader::Variant& value) {
+std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantValue& value) {
     std::string typeTag;
     if (!std::getline(stream, typeTag, ':')) {
-        throw std::runtime_error("Type tag not found!");
+        throw NoTypeTagException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     if (typeTag == "int") {
         int val;
         if (!(stream >> val)) {
-            throw std::runtime_error("Value not found!");
+            throw InvalidValueException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
         }
         value = val;
     } else if (typeTag == "string") {
         std::string val;
         if (!(stream >> val)) {
-            throw std::runtime_error("Value not found!");
+            throw InvalidValueException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
         }
         value = val;
     } else {
-        throw std::runtime_error("Unsupported type tag!");
+        throw UnsupportedTypeTag(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
     return stream;
 }
 
 
-ConcreteReader::ConcreteReader(std::string_view filename) {
+ConcreteReader::ConcreteReader(const std::string_view& filename) {
     m_stream.open(filename.data());
     if (!m_stream.is_open()) {
-        throw std::runtime_error("Error while open file!");
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 }
 
-std::pair<std::string, typename ConcreteReader::Variant> ConcreteReader::nextField() {
+typename ConcreteReader::Field ConcreteReader::nextField() {
     if (m_fieldQueue.empty() && !m_stream.eof()) 
     lineIterator();
     if (m_fieldQueue.empty())
-        return std::make_pair(std::string{}, std::nullopt);
+        return std::make_pair(std::nullopt, std::nullopt);
 
     auto field = m_fieldQueue.front();
     m_fieldQueue.pop();
@@ -54,37 +54,37 @@ cfgType ConcreteReader::readMeta() {
     std::string metaBuffer{};
 
     if (!std::getline(m_stream, metaBuffer)) {
-        throw std::runtime_error("Error reading");
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     if (metaBuffer != META_HEADER)
-        throw std::runtime_error("Error in meta section!");
+        throw MetaSectionError(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
 
     if (!std::getline(m_stream, metaBuffer)) {
-        throw std::runtime_error("Error reading");
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     auto it = m_relations.find(metaBuffer);
     if (it == m_relations.end()) {
-        throw std::runtime_error("Unsupported cfg");
+        throw UnsupportedConfiguration(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     if (!std::getline(m_stream, metaBuffer)) {
-        throw std::runtime_error("Error reading");
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     if (metaBuffer != META_FOOTER)
-        throw std::runtime_error("Error in meta section!");
+        throw MetaSectionError(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
 
     return it->second;
 }
 
 void ConcreteReader::readField(std::stringstream& stream) {
     std::string key{};
-    Variant value;
+    VariantValue value;
 
     if (!(stream >> key >> value)) {
-        throw std::runtime_error("Data error!");
+        throw InvalidValueException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     m_fieldQueue.push(std::make_pair(key, value));
@@ -99,16 +99,10 @@ void ConcreteReader::lineIterator() {
     if (!std::getline(m_stream, buffer)) {
         if (m_stream.eof())
             return;
-        throw std::runtime_error("Error in field read");
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
     ss.str(std::move(buffer));
     readField(ss);
     
-}
-
-
-ConcreteReader::~ConcreteReader() {
-    if (m_stream.is_open())
-        m_stream.close();
 }

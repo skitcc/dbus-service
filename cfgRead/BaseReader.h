@@ -17,9 +17,12 @@ class BaseReader {
 public:
     virtual ~BaseReader() = default;
 protected:
-    using Variant = std::optional<std::variant<int, std::string>>;
+    using VariantKey = std::optional<std::string>;
+    using VariantValue = std::optional<std::variant<int, std::string>>;
 
-    virtual std::pair<std::string, Variant> nextField() = 0;
+    using Field = std::pair<VariantKey, VariantValue>;
+
+    virtual Field nextField() = 0;
 
     const std::map<std::string, cfgType> m_relations{
         {"Timeout", cfgType::TIMEOUT},
