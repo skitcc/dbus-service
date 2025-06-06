@@ -1,6 +1,5 @@
 src = [
     'ConcreteReader.cpp',
-    'ReaderFactory.cpp',
 ]
 
 deps = [

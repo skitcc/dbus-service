@@ -2,16 +2,21 @@
 #define SERVICE_H
 
 #include <filesystem>
-
-#define CONFIG_DIR "../data/"
-
+#include <sdbus-c++/IConnection.h>
+#include "dbus-objects/BaseDbusObject.h"
 
 
 class Service {
 public:
     Service();
+    void addObject(std::shared_ptr<BaseDbusObject> dbusObject);
+    void run();
+    std::shared_ptr<sdbus::IConnection> getConnection();
+
 
 private:
+    std::vector<std::shared_ptr<BaseDbusObject>> m_dbusObjects;
+    std::shared_ptr<sdbus::IConnection> m_connection;
 
 };
 

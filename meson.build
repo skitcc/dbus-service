@@ -11,8 +11,12 @@ project(
 
 sdbus_dep = dependency('sdbus-c++')
 
+subdir('exceptions')
 subdir('cfgRead')
-
+subdir('dbus-objects')
+subdir('service')
+subdir('cfgBuilder')
+subdir('serviceManager')
 
 
 src = [
@@ -21,7 +25,12 @@ src = [
 
 deps = [
     sdbus_dep,
+    exceptions_core_dep,
     reader_core_dep,
+    dbusObjects_core_dep,
+    service_core_dep,
+    builder_core_dep,
+    manager_core_dep,
 ]
 
 

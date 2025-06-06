@@ -1,6 +1,10 @@
 #include <iostream>
 
+#include "serviceManager/ServiceManager.h"
+
 
 int main() {
-    std::cout << "jopa";
+    ServiceManager serviceManager;
+
+    serviceManager.runApplication();
 }

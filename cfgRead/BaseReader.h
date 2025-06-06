@@ -5,28 +5,29 @@
 #include <variant>
 #include <string>
 #include <map>
-#include <string_view>
-#include <fstream>
-#include <queue>
+#include <filesystem>
 
 enum class cfgType : size_t{
     TIMEOUT = 0,
 };
 
 class BaseReader {
+protected:
+    using VariantKey = std::string;
+    using VariantValue = std::variant<int, std::string>;
+    using Field = std::optional<std::pair<VariantKey, VariantValue>>;
+
 public:
     virtual ~BaseReader() = default;
-protected:
-    using VariantKey = std::optional<std::string>;
-    using VariantValue = std::optional<std::variant<int, std::string>>;
-
-    using Field = std::pair<VariantKey, VariantValue>;
-
     virtual Field nextField() = 0;
+    virtual void setFile(const std::filesystem::path& path) = 0;
+    virtual cfgType readMeta() = 0;
 
-    const std::map<std::string, cfgType> m_relations{
+protected:
+    const std::map<std::string, cfgType> m_relations {
         {"Timeout", cfgType::TIMEOUT},
     };
+
 };
 
 

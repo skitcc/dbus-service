@@ -21,4 +21,6 @@ public:
 
 using DefaultReaderCreator = ConcreteReaderFactory<ConcreteReader, std::string_view>;
 
+#include "ReaderFactory.hpp"
+
 #endif

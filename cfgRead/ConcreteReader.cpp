@@ -1,9 +1,28 @@
 #include "ConcreteReader.h"
 #include "exceptions/Exceptions.h"
+#include <iostream>
 
 namespace {
     constexpr std::string_view META_HEADER = "--META--";
     constexpr std::string_view META_FOOTER = "--------";
+}
+
+ConcreteReader::ConcreteReader(const std::string_view& filename) {
+    m_stream.open(filename.data());
+    if (!m_stream.is_open()) {
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
+    }
+}
+
+void ConcreteReader::setFile(const std::filesystem::path& path) {
+    if (m_stream.is_open())
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
+
+    m_stream.open(path);
+
+    if (!m_stream.is_open())
+        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
+    
 }
 
 std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantValue& value) {
@@ -31,18 +50,12 @@ std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantV
 }
 
 
-ConcreteReader::ConcreteReader(const std::string_view& filename) {
-    m_stream.open(filename.data());
-    if (!m_stream.is_open()) {
-        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
-    }
-}
 
 typename ConcreteReader::Field ConcreteReader::nextField() {
     if (m_fieldQueue.empty() && !m_stream.eof()) 
     lineIterator();
     if (m_fieldQueue.empty())
-        return std::make_pair(std::nullopt, std::nullopt);
+        return std::nullopt;
 
     auto field = m_fieldQueue.front();
     m_fieldQueue.pop();
@@ -76,6 +89,8 @@ cfgType ConcreteReader::readMeta() {
     if (metaBuffer != META_FOOTER)
         throw MetaSectionError(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
 
+    std::cout << "meta readed! " << "type " <<  int(it->second) << '\n';
+
     return it->second;
 }
 
@@ -106,3 +121,4 @@ void ConcreteReader::lineIterator() {
     readField(ss);
     
 }
+
