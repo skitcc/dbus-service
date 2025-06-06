@@ -37,14 +37,14 @@ protected:
     {
         m_object.addVTable( sdbus::registerMethod("ChangeConfiguration").withInputParamNames("key", "value").implementedAs([this](const std::string& key, const sdbus::Variant& value){ return this->ChangeConfiguration(key, value); })
                           , sdbus::registerMethod("GetConfiguration").withOutputParamNames("configuration").implementedAs([this](){ return this->GetConfiguration(); })
-                          , sdbus::registerSignal("ConfigurationChanged").withParameters<std::string, sdbus::Variant>("key", "value")
+                          , sdbus::registerSignal("ConfigurationChanged").withParameters<std::map<std::string, sdbus::Variant>>("configuration")
                           ).forInterface(INTERFACE_NAME);
     }
 
 public:
-    void emitConfigurationChanged(const std::string& key, const sdbus::Variant& value)
+    void emitConfigurationChanged(const std::map<std::string, sdbus::Variant>& configuration)
     {
-        m_object.emitSignal("ConfigurationChanged").onInterface(INTERFACE_NAME).withArguments(key, value);
+        m_object.emitSignal("ConfigurationChanged").onInterface(INTERFACE_NAME).withArguments(configuration);
     }
 
 private:

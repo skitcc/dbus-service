@@ -11,12 +11,12 @@ public:
     Service();
     void addObject(std::shared_ptr<BaseDbusObject> dbusObject);
     void run();
-    std::shared_ptr<sdbus::IConnection> getConnection();
+    sdbus::IConnection& getConnection();
 
 
 private:
     std::vector<std::shared_ptr<BaseDbusObject>> m_dbusObjects;
-    std::shared_ptr<sdbus::IConnection> m_connection;
+    std::unique_ptr<sdbus::IConnection> m_connection;
 
 };
 

@@ -23,11 +23,10 @@ void DbusObjectBuilder::setObjectAttributes(sdbus::IConnection& connection, sdbu
     if (it == m_relTypes.end()) {
         throw UnsupportedConfiguration(__FILE__, typeid(DbusObjectBuilder).name(), __FUNCTION__);
     }
-    std::cout << "object type found!\n";
     try {
         m_object = it->second(connection, path);
-    } catch(...) {
-        std::cout << "catched!\n";
+    } catch(const sdbus::Error& ex) {
+        std::cout << ex.what() << '\n';
     }
     
 }
@@ -36,10 +35,8 @@ void DbusObjectBuilder::setObjectAttributes(sdbus::IConnection& connection, sdbu
 void DbusObjectBuilder::build() {
     std::map<VariantKey, VariantValue> currentConfig;
     auto field = m_reader->nextField();
-    std::cout << "in build dbusbuilder\n";
     while (field.has_value()) {
         currentConfig[field->first] = field->second;
-        std::cout << field->first << '\n'; 
         field = m_reader->nextField();
     }
 
@@ -48,7 +45,6 @@ void DbusObjectBuilder::build() {
 
 
 std::shared_ptr<BaseDbusObject> DbusObjectBuilder::getBuildedObject() {
-    std::cout << "in get bulded object\n";
     build();
     return m_object;
 }

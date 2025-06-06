@@ -9,8 +9,7 @@
       <arg name="configuration" type="a{sv}" direction="out"/>
     </method>
     <signal name="ConfigurationChanged">
-      <arg name="key" type="s"/>
-      <arg name="value" type="v"/>
+      <arg name="configuration" type="a{sv}"/>
     </signal>
   </interface>
 </node>

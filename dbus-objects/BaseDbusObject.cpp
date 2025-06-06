@@ -17,12 +17,10 @@ void BaseDbusObject::setConfiguration(std::map<VariantKey, VariantValue>&& conf)
 void BaseDbusObject::ChangeConfiguration(const std::string& key, const sdbus::Variant& value) {
     auto it = m_conf.find(key);
     if (it == m_conf.end()) {
-        throw UnsupportedKeyConfiguration(__FILE__, typeid(BaseDbusObject).name(), __FUNCTION__);
+        throw sdbus::Error(sdbus::Error::Name("Configuration params error!"), "Error : no such value by this key!");
     }
 
     m_conf[key] = value;
-    emitConfigurationChanged(key, value);
-
 }
 
 std::map<std::string, sdbus::Variant> BaseDbusObject::GetConfiguration() {
@@ -35,6 +33,7 @@ std::map<std::string, sdbus::Variant> BaseDbusObject::GetConfiguration() {
         }, value);
         result[key] = variantVal;
     }
+    emitConfigurationChanged(result);
     return result;
 }
 

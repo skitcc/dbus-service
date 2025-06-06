@@ -5,7 +5,6 @@
 
 
 ServiceBuilder::ServiceBuilder() {
-    std::cout << "in default ctor service builder\n";
     m_reader = std::make_shared<ConcreteReader>();
     m_service = std::make_shared<Service>();
 }
@@ -14,11 +13,8 @@ bool ServiceBuilder::build() {
     collectAllConfigs();
     std::shared_ptr<BaseDbusObjectBuilder> configBuilder = std::make_shared<DbusObjectBuilder>();
 
-    std::string objectPath{"com/system/configurationManager/Application"};
+    std::string objectPath{"/com/system/configurationManager/Application"};
     
-
-    auto connection = m_service->getConnection(); 
-
     bool builtCorrect = true;
 
     try {
@@ -34,8 +30,7 @@ bool ServiceBuilder::build() {
             auto confType = m_reader->readMeta();
             
             configBuilder->setBuilderParams(m_reader, confType);
-            configBuilder->setObjectAttributes(*connection, currentPath);
-            std::cout << "here!!\n";
+            configBuilder->setObjectAttributes(m_service->getConnection(), currentPath);
             auto object = configBuilder->getBuildedObject();
             m_service->addObject(object);        
         }

@@ -2,7 +2,8 @@
 #include <iostream>
 
 
-Service::Service() : m_connection(sdbus::createSessionBusConnection()) {
+Service::Service() {
+    m_connection = sdbus::createSessionBusConnection();
     sdbus::ServiceName serviceName{"com.system.configurationManager"}; 
     try {
         m_connection->requestName(serviceName);
@@ -11,14 +12,15 @@ Service::Service() : m_connection(sdbus::createSessionBusConnection()) {
         std::cerr << "Failed to acquire service name: " << e.getName() << " - " << e.getMessage() << "\n";
         throw;
     }
+
 }
 
 void Service::addObject(std::shared_ptr<BaseDbusObject> dbusObject) {
     m_dbusObjects.push_back(dbusObject);
 }
 
-std::shared_ptr<sdbus::IConnection> Service::getConnection() {
-    return m_connection;
+sdbus::IConnection& Service::getConnection() {
+    return *m_connection;
 }
 
 void Service::run() {

@@ -1,6 +1,7 @@
 #include "ConcreteReader.h"
 #include "exceptions/Exceptions.h"
 #include <iostream>
+#include <algorithm>
 
 namespace {
     constexpr std::string_view META_HEADER = "--META--";
@@ -31,6 +32,9 @@ std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantV
         throw NoTypeTagException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
 
+    typeTag.erase(std::remove_if(typeTag.begin(), typeTag.end(), 
+    [](unsigned char c) { return std::isspace(c); }), typeTag.end());
+
     if (typeTag == "int") {
         int val;
         if (!(stream >> val)) {
@@ -52,8 +56,9 @@ std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantV
 
 
 typename ConcreteReader::Field ConcreteReader::nextField() {
-    if (m_fieldQueue.empty() && !m_stream.eof()) 
-    lineIterator();
+    if (m_fieldQueue.empty() && !m_stream.eof()) {
+        lineIterator();
+    } 
     if (m_fieldQueue.empty())
         return std::nullopt;
 
@@ -89,15 +94,13 @@ cfgType ConcreteReader::readMeta() {
     if (metaBuffer != META_FOOTER)
         throw MetaSectionError(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
 
-    std::cout << "meta readed! " << "type " <<  int(it->second) << '\n';
-
     return it->second;
 }
 
 void ConcreteReader::readField(std::stringstream& stream) {
     std::string key{};
     VariantValue value;
-
+    std::cout << "in read field\n";
     if (!(stream >> key >> value)) {
         throw InvalidValueException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
@@ -109,7 +112,6 @@ void ConcreteReader::readField(std::stringstream& stream) {
 void ConcreteReader::lineIterator() {
     std::string buffer{};
     std::stringstream ss{};
-
 
     if (!std::getline(m_stream, buffer)) {
         if (m_stream.eof())
