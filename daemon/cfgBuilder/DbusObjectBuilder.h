@@ -3,7 +3,7 @@
 
 #include "cfgRead/ConcreteReader.h"
 #include "dbus-objects/TimeoutObject.h"
-#include "exceptions/Exceptions.h"
+#include "common/Exceptions.h"
 
 #include <memory>
 #include <functional>
@@ -23,15 +23,14 @@ public:
     virtual ~BaseDbusObjectBuilder() = default;
     virtual void setBuilderParams(std::shared_ptr<BaseReader> reader, cfgType configType) = 0;
     virtual void setObjectAttributes(sdbus::IConnection& connection, sdbus::ObjectPath path) = 0;
-    virtual std::shared_ptr<BaseDbusObject> getBuildedObject() = 0;
 
+    virtual void build() = 0;
 protected:
     std::shared_ptr<BaseReader> m_reader;
     std::shared_ptr<BaseDbusObject> m_object;
     cfgType m_configType;
 
     std::map<cfgType, std::function<std::shared_ptr<BaseDbusObject>(sdbus::IConnection&, sdbus::ObjectPath)>> m_relTypes;
-    virtual void build() = 0;
 
 };
 
@@ -40,10 +39,6 @@ public:
     DbusObjectBuilder();
     void setBuilderParams(std::shared_ptr<BaseReader> reader, cfgType configType) override;
     virtual void setObjectAttributes(sdbus::IConnection& connection, sdbus::ObjectPath path) override;
-
-    std::shared_ptr<BaseDbusObject> getBuildedObject() override;
-
-protected:
     void build() override;
 
 };

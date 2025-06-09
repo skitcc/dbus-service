@@ -1,5 +1,5 @@
 #include "BaseDbusObject.h"
-#include "exceptions/Exceptions.h"
+#include "common/Exceptions.h"
 
 
 BaseDbusObject::BaseDbusObject(sdbus::IConnection& connection, sdbus::ObjectPath objectPath) 

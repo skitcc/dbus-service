@@ -13,12 +13,10 @@ DbusObjectBuilder::DbusObjectBuilder() {
 void DbusObjectBuilder::setBuilderParams(std::shared_ptr<BaseReader> reader, cfgType configType) {
     m_reader = reader;
     m_configType = configType;
-    std::cout << "in set builder params\n";
 }
 
 void DbusObjectBuilder::setObjectAttributes(sdbus::IConnection& connection, sdbus::ObjectPath path) {
     auto it = m_relTypes.find(m_configType);
-    std::cout << "in attributes\n";
 
     if (it == m_relTypes.end()) {
         throw UnsupportedConfiguration(__FILE__, typeid(DbusObjectBuilder).name(), __FUNCTION__);
@@ -43,8 +41,3 @@ void DbusObjectBuilder::build() {
     m_object->setConfiguration(std::move(currentConfig));
 }
 
-
-std::shared_ptr<BaseDbusObject> DbusObjectBuilder::getBuildedObject() {
-    build();
-    return m_object;
-}

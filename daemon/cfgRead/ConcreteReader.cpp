@@ -1,5 +1,5 @@
 #include "ConcreteReader.h"
-#include "exceptions/Exceptions.h"
+#include "common/Exceptions.h"
 #include <iostream>
 #include <algorithm>
 

@@ -3,26 +3,28 @@
 
 
 #include <filesystem>
-#include "service/Service.h"
 #include "cfgRead/ConcreteReader.h"
 #include "DbusObjectBuilder.h"
+#include <sdbus-c++/IConnection.h>
 
 
 class ServiceBuilder {
 public:
     ServiceBuilder();
     bool build();
-    std::shared_ptr<Service> getService();
+    
+    sdbus::IConnection& getConnection();
 
 private:
 
     void collectAllConfigs();
+    void initConnection();
 
-    std::shared_ptr<Service> m_service;
+
     std::vector<std::filesystem::path> m_configPaths;
     std::shared_ptr<BaseReader> m_reader;
+    std::unique_ptr<sdbus::IConnection> m_connection;
 
-    static constexpr std::string_view CONFIG_DIR = "../data/";
 
 };
 

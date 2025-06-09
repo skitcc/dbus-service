@@ -1,19 +1,17 @@
 #include "ServiceBuilder.h"
 #include <sdbus-c++/Types.h>
-#include <sdbus-c++/IConnection.h>
+#include "common/Config.h"
 #include <iostream>
 
 
 ServiceBuilder::ServiceBuilder() {
     m_reader = std::make_shared<ConcreteReader>();
-    m_service = std::make_shared<Service>();
+    initConnection();
 }
 
 bool ServiceBuilder::build() {
     collectAllConfigs();
     std::shared_ptr<BaseDbusObjectBuilder> configBuilder = std::make_shared<DbusObjectBuilder>();
-
-    std::string objectPath{"/com/system/configurationManager/Application"};
     
     bool builtCorrect = true;
 
@@ -24,32 +22,45 @@ bool ServiceBuilder::build() {
             if (filename.find_last_of('.') != std::string::npos) {
                 filename = filename.substr(0, filename.find_last_of('.'));
             }
-            sdbus::ObjectPath currentPath = sdbus::ObjectPath{objectPath + "/" + filename};
+            sdbus::ObjectPath currentPath = sdbus::ObjectPath{dbus_daemon::Config::getBaseObjectPath() + "/" + filename};
             std::cout << "Processing path: " << currentPath << "\n";
             m_reader->setFile(path);
             auto confType = m_reader->readMeta();
             
             configBuilder->setBuilderParams(m_reader, confType);
-            configBuilder->setObjectAttributes(m_service->getConnection(), currentPath);
-            auto object = configBuilder->getBuildedObject();
-            m_service->addObject(object);        
+            configBuilder->setObjectAttributes(*m_connection, currentPath);
+            configBuilder->build();
         }
+
     } catch(...) {
         builtCorrect = false;
     }
     return builtCorrect;
 }
 
-std::shared_ptr<Service> ServiceBuilder::getService() {
-    return m_service;
+
+sdbus::IConnection& ServiceBuilder::getConnection() {
+    return *m_connection;
 }
 
 
 void ServiceBuilder::collectAllConfigs() {
-    for (const auto& entry : std::filesystem::directory_iterator(CONFIG_DIR)) {
+    for (const auto& entry : std::filesystem::directory_iterator(dbus_daemon::Config::getConfigurationDir())) {
         if (entry.is_regular_file()) {
             std::cout << entry.path() << '\n';
             m_configPaths.push_back(entry.path());
         }
+    }
+}
+
+void ServiceBuilder::initConnection() {
+    m_connection = sdbus::createSessionBusConnection();
+    sdbus::ServiceName serviceName = dbus_daemon::Config::getServiceName(); 
+    try {
+        m_connection->requestName(serviceName);
+        std::cout << "Service name acquired: com.system.configurationManager\n";
+    } catch (const sdbus::Error& e) {
+        std::cout << "Failed to acquire service name: " << e.getName() << " - " << e.getMessage() << "\n";
+        throw e;
     }
 }
