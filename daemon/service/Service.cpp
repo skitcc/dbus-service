@@ -1,0 +1,56 @@
+#include "Service.h"
+
+#include "dbus-objects/TimeoutObject.h"
+#include "common/Exceptions.h"
+#include "common/Config.h"
+#include <iostream>
+
+
+Service::Service() {
+    try {
+        m_connection = sdbus::createSessionBusConnection();
+        m_connection->requestName(dbus_daemon::Config::getServiceName());
+    } catch (const sdbus::Error& ex) {
+        std::cout << "Raised exception while asking for well kwown name or creating a bus connection! : " << ex.what();
+    }
+
+
+    m_relTypes = 
+    {
+        {cfgType::TIMEOUT, [](sdbus::IConnection& connection, sdbus::ObjectPath path){
+            return std::make_shared<TimeoutObject>(connection, path);
+        }},
+    };
+}
+
+void Service::addConfiguratedObjects(std::vector<std::shared_ptr<BaseDbusObject>>&& configuratedObjects) {
+    m_objects = configuratedObjects;
+}
+
+void Service::registrateObjects() {
+    auto storage = ObjectInfoStorage::instance();
+    auto& storageData = storage->getStorageData();
+
+    for (auto& dataIt : storageData) {
+        auto it = m_relTypes.find(std::get<cfgType>(dataIt));
+        if (it == m_relTypes.end()) {
+            throw UnsupportedConfiguration(__FILE__, typeid(Service).name(), __FUNCTION__);
+        }
+        std::shared_ptr<BaseDbusObject> object = it->second(*m_connection, std::get<sdbus::ObjectPath>(dataIt)); 
+        object->setConfiguration(std::get<FileConfiguration>(dataIt));
+        m_objects.push_back(object);
+    }
+}
+
+void Service::run() {
+    registrateObjects();
+
+    for (const auto& object : m_objects) {
+        object->specificBehaviour();
+    }
+    try {
+        m_connection->enterEventLoop();
+    } catch(const sdbus::Error& ex) {
+        std::cout << "Raised exception while trying to join the event loop! : " << ex.what();
+    }
+}

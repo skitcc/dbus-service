@@ -1,32 +1,9 @@
 #include "DbusObjectBuilder.h"
 #include <iostream>
 
-DbusObjectBuilder::DbusObjectBuilder() {
-    m_relTypes = 
-    {
-        {cfgType::TIMEOUT, [](sdbus::IConnection& connection, sdbus::ObjectPath path){
-            return std::make_shared<TimeoutObject>(connection, path);
-        }},
-    };
-}
 
-void DbusObjectBuilder::setBuilderParams(std::shared_ptr<BaseReader> reader, cfgType configType) {
+void DbusObjectBuilder::setBuilderParams(std::shared_ptr<BaseReader> reader) {
     m_reader = reader;
-    m_configType = configType;
-}
-
-void DbusObjectBuilder::setObjectAttributes(sdbus::IConnection& connection, sdbus::ObjectPath path) {
-    auto it = m_relTypes.find(m_configType);
-
-    if (it == m_relTypes.end()) {
-        throw UnsupportedConfiguration(__FILE__, typeid(DbusObjectBuilder).name(), __FUNCTION__);
-    }
-    try {
-        m_object = it->second(connection, path);
-    } catch(const sdbus::Error& ex) {
-        std::cout << ex.what() << '\n';
-    }
-    
 }
 
 
@@ -37,7 +14,11 @@ void DbusObjectBuilder::build() {
         currentConfig[field->first] = field->second;
         field = m_reader->nextField();
     }
-
-    m_object->setConfiguration(std::move(currentConfig));
+    m_builtConfig = std::move(currentConfig);
 }
 
+ 
+std::map<typename DbusObjectBuilder::VariantKey, typename DbusObjectBuilder::VariantValue> DbusObjectBuilder::getBuiltConfig() {
+    build();
+    return m_builtConfig;
+}

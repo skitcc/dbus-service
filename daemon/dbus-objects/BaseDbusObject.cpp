@@ -9,7 +9,7 @@ BaseDbusObject::BaseDbusObject(sdbus::IConnection& connection, sdbus::ObjectPath
 }
 
 
-void BaseDbusObject::setConfiguration(std::map<VariantKey, VariantValue>&& conf) {
+void BaseDbusObject::setConfiguration(const FileConfiguration& conf) {
     m_conf = conf;
 }
 

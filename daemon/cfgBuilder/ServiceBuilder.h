@@ -12,18 +12,17 @@ class ServiceBuilder {
 public:
     ServiceBuilder();
     bool build();
+
+    std::vector<std::shared_ptr<BaseDbusObject>> getConfiguratedObjects();
     
-    sdbus::IConnection& getConnection();
 
 private:
 
     void collectAllConfigs();
-    void initConnection();
-
 
     std::vector<std::filesystem::path> m_configPaths;
     std::shared_ptr<BaseReader> m_reader;
-    std::unique_ptr<sdbus::IConnection> m_connection;
+    std::vector<std::shared_ptr<BaseDbusObject>> m_configuratedObjects;
 
 
 };

@@ -8,6 +8,7 @@
 
 class TimeoutObject : public BaseDbusObject {
 public:
+    TimeoutObject() = default;
     TimeoutObject(sdbus::IConnection& connection, sdbus::ObjectPath objectPath);
 
     void specificBehaviour() override;

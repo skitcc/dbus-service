@@ -21,25 +21,22 @@ public:
     BaseDbusObjectBuilder() = default;
 
     virtual ~BaseDbusObjectBuilder() = default;
-    virtual void setBuilderParams(std::shared_ptr<BaseReader> reader, cfgType configType) = 0;
-    virtual void setObjectAttributes(sdbus::IConnection& connection, sdbus::ObjectPath path) = 0;
+    virtual void setBuilderParams(std::shared_ptr<BaseReader> reader) = 0;
 
     virtual void build() = 0;
+    virtual std::map<VariantKey, VariantValue> getBuiltConfig() = 0;
 protected:
-    std::shared_ptr<BaseReader> m_reader;
-    std::shared_ptr<BaseDbusObject> m_object;
-    cfgType m_configType;
-
-    std::map<cfgType, std::function<std::shared_ptr<BaseDbusObject>(sdbus::IConnection&, sdbus::ObjectPath)>> m_relTypes;
-
+    std::shared_ptr<BaseReader> m_reader{};
+    std::map<VariantKey, VariantValue> m_builtConfig{};
 };
 
 class DbusObjectBuilder : public BaseDbusObjectBuilder {
 public:
-    DbusObjectBuilder();
-    void setBuilderParams(std::shared_ptr<BaseReader> reader, cfgType configType) override;
-    virtual void setObjectAttributes(sdbus::IConnection& connection, sdbus::ObjectPath path) override;
+    DbusObjectBuilder() = default;
+    void setBuilderParams(std::shared_ptr<BaseReader> reader) override;
     void build() override;
+
+    std::map<VariantKey, VariantValue> getBuiltConfig() override;
 
 };
 

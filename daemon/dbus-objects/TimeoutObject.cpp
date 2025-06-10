@@ -12,6 +12,7 @@ void TimeoutObject::specificBehaviour() {
 
 
 void TimeoutObject::timerLoop() {
+    std::cout << "in timer loop!\n";
     while (m_running) {
         auto timeoutIt = m_conf.find("Timeout");
         auto phraseIt = m_conf.find("TimeoutPhrase");

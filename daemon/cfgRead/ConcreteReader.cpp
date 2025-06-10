@@ -26,7 +26,7 @@ void ConcreteReader::setFile(const std::filesystem::path& path) {
     
 }
 
-std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantValue& value) {
+std::istream& operator>>(std::istream& stream, VariantValue& value) {
     std::string typeTag;
     if (!std::getline(stream, typeTag, ':')) {
         throw NoTypeTagException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
@@ -55,7 +55,7 @@ std::istream& operator>>(std::istream& stream, typename ConcreteReader::VariantV
 
 
 
-typename ConcreteReader::Field ConcreteReader::nextField() {
+std::optional<Field> ConcreteReader::nextField() {
     if (m_fieldQueue.empty() && !m_stream.eof()) {
         lineIterator();
     } 

@@ -1,6 +1,7 @@
 src = [
     'Config.cpp',
-    'Exceptions.cpp'
+    'Exceptions.cpp',
+    'ObjectInfoStorage.cpp',
 ]
 
 
