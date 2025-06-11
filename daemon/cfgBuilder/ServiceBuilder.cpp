@@ -13,10 +13,15 @@ ServiceBuilder::ServiceBuilder() {
 }
 
 bool ServiceBuilder::build() {
-    collectAllConfigs();
+    bool builtCorrect = true;
+
+    if (!collectAllConfigs()) {
+        builtCorrect = false;
+        std::cout << "No such directory for configs!\n";
+    }
+
     std::shared_ptr<BaseDbusObjectBuilder> configBuilder = std::make_shared<DbusObjectBuilder>();
     
-    bool builtCorrect = true;
     auto objectStorage = ObjectInfoStorage::instance();
 
     boost::json::array arrayForClient;
@@ -31,7 +36,6 @@ bool ServiceBuilder::build() {
             }
             sdbus::ObjectPath currentPath = sdbus::ObjectPath{dbus_daemon::Config::getBaseObjectPath() + "/" + filename};
             
-            std::cout << "Processing path: " << currentPath << "\n";
             m_reader->setFile(path);
 
             auto cfgType = m_reader->readMeta();
@@ -59,13 +63,16 @@ std::vector<std::shared_ptr<BaseDbusObject>> ServiceBuilder::getConfiguratedObje
     return m_configuratedObjects;
 }
 
-void ServiceBuilder::collectAllConfigs() {
+bool ServiceBuilder::collectAllConfigs() {
+    if (!std::filesystem::is_directory(dbus_daemon::Config::getConfigurationDir()))
+        return false;
+
     for (const auto& entry : std::filesystem::directory_iterator(dbus_daemon::Config::getConfigurationDir())) {
         if (entry.is_regular_file()) {
-            std::cout << entry.path() << '\n';
             m_configPaths.push_back(entry.path());
         }
     }
+    return true;
 }
 
 void pretty_print(std::ostream& os, const boost::json::value& jv, int indent, int indent_size) {

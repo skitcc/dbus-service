@@ -20,7 +20,6 @@ void ProxyComposite::setProxiesConfigurations(const std::vector<ClientConfigurat
 
 
 void ProxyComposite::registrateProxies() {
-    size_t objCounter = 0;
     for (const auto& [objectPath, type] : m_clientConfigurations) {
         auto it = m_relations.find(type);
         if (it == m_relations.end())

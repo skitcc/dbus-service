@@ -21,7 +21,7 @@ public:
 
 private:
 
-    void collectAllConfigs();
+    bool collectAllConfigs();
 
     std::vector<std::filesystem::path> m_configPaths;
     std::shared_ptr<BaseReader> m_reader;

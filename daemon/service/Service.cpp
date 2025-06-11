@@ -22,9 +22,7 @@ void Service::addConfiguratedObjects(std::vector<std::shared_ptr<BaseDbusObject>
 void Service::registrateObjects() {
     auto storage = ObjectInfoStorage::instance();
     auto& storageData = storage->getStorageData();
-
     for (auto& dataIt : storageData) {
-
         std::shared_ptr<BaseDbusObject> object = std::make_shared<BaseDbusObject>(*m_connection, std::get<sdbus::ObjectPath>(dataIt));
         object->setConfiguration(std::get<FileConfiguration>(dataIt));
         m_objects.push_back(object);
@@ -33,8 +31,8 @@ void Service::registrateObjects() {
 
 void Service::run() {
     registrateObjects();
-
     try {
+        std::cout << "Service is running...\n";
         m_connection->enterEventLoop();
     } catch(const sdbus::Error& ex) {
         std::cout << "Raised exception while trying to join the event loop! : " << ex.what();

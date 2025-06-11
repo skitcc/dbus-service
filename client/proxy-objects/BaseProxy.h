@@ -4,6 +4,7 @@
 #include "adapters/configurationProxy.h"
 #include "common/cfgDefines.h"
 #include <sdbus-c++/ProxyInterfaces.h>
+#include <mutex>
 
 class BaseProxy : public sdbus::ProxyInterfaces<com::system::configurationManager::Application::Configuration_proxy>{
 public:
@@ -15,13 +16,13 @@ public:
 
 protected:
     FileConfiguration m_conf;
+    std::mutex m_confMutex;
 
 
 private:
     void initConfiguration();
 
     std::optional<FileConfiguration> convertDbusToStl(const std::map<std::string, sdbus::Variant>& configuration);
-
 };
 
 

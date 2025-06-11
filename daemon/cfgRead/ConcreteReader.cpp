@@ -99,7 +99,6 @@ std::string ConcreteReader::readMeta() {
 void ConcreteReader::readField(std::stringstream& stream) {
     std::string key{};
     VariantValue value;
-    std::cout << "in read field\n";
     if (!(stream >> key >> value)) {
         throw InvalidValueException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }

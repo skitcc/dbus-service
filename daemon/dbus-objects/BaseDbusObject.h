@@ -17,10 +17,12 @@ public:
     void setConfiguration(const FileConfiguration& conf);
     ~BaseDbusObject();
     
-protected:
+private:
     void ChangeConfiguration(const std::string& key, const sdbus::Variant& value) override;
+    void stlToDbus(std::map<std::string, sdbus::Variant>& result);
     std::map<std::string, sdbus::Variant> GetConfiguration() override;
     FileConfiguration m_conf;
+
 };
 
 

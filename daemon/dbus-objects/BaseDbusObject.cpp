@@ -13,6 +13,15 @@ void BaseDbusObject::setConfiguration(const FileConfiguration& conf) {
     m_conf = conf;
 }
 
+void BaseDbusObject::stlToDbus(std::map<std::string, sdbus::Variant>& result) {
+    for (const auto& [key, value] : m_conf) {
+        sdbus::Variant variantVal;
+        std::visit([&variantVal](const auto& val) {
+            variantVal = sdbus::Variant(val);
+        }, value);
+        result[key] = variantVal;
+    }
+}
 
 void BaseDbusObject::ChangeConfiguration(const std::string& key, const sdbus::Variant& value) {
     auto it = m_conf.find(key);
@@ -21,19 +30,18 @@ void BaseDbusObject::ChangeConfiguration(const std::string& key, const sdbus::Va
     }
 
     m_conf[key] = value;
+
+    std::map<std::string, sdbus::Variant> result;
+    stlToDbus(result);
+
+
+    emitConfigurationChanged(result);
 }
 
 std::map<std::string, sdbus::Variant> BaseDbusObject::GetConfiguration() {
     std::map<std::string, sdbus::Variant> result;
     
-    for (const auto& [key, value] : m_conf) {
-        sdbus::Variant variantVal;
-        std::visit([&variantVal](const auto& val) {
-            variantVal = sdbus::Variant(val);
-        }, value);
-        result[key] = variantVal;
-    }
-    emitConfigurationChanged(result);
+    stlToDbus(result);
     return result;
 }
 

@@ -31,7 +31,10 @@ void BaseProxy::initConfiguration() {
         if (!stlConfiguration.has_value())
             throw sdbus::Error(sdbus::Error::Name("Ошибка"), "Неизвестный тип!");
     
-        m_conf = stlConfiguration.value();
+        {
+            std::lock_guard<std::mutex> lock(m_confMutex);
+            m_conf = stlConfiguration.value();
+        }
     } catch(const sdbus::Error& ex) {
         std::cout << ex.what();
     }
@@ -39,12 +42,13 @@ void BaseProxy::initConfiguration() {
 
 
 void BaseProxy::onConfigurationChanged(const std::map<std::string, sdbus::Variant>& configuration) {
-
     auto currentConf = convertDbusToStl(configuration);
     if (!currentConf.has_value())
         throw sdbus::Error(sdbus::Error::Name("Ошибка"), "Неизвестный тип!");
-    
-    m_conf = currentConf.value();
+    {
+        std::lock_guard<std::mutex> lock(m_confMutex);
+        m_conf = currentConf.value();
+    }
 
 }
 
