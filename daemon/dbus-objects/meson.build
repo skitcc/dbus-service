@@ -1,6 +1,5 @@
 src = [
     'BaseDbusObject.cpp',
-    'TimeoutObject.cpp',
 ]
 
 deps = [

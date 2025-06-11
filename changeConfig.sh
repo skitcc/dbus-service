@@ -16,3 +16,6 @@ gdbus call -e -d com.system.configurationManager \
 # gdbus call -e -d com.system.configurationManager \
 #   -o /com/system/configurationManager/Application/timeout_conf \
 #   -m com.system.configurationManager.Application.Configuration.GetConfiguration
+
+
+gdbus introspect --session --dest com.system.configurationManager -o /com/system/configurationManager/Application/timeout_conf

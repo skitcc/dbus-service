@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "cfgRead/ConcreteReader.h"
 #include "DbusObjectBuilder.h"
+#include "dbus-objects/BaseDbusObject.h"
 #include <sdbus-c++/IConnection.h>
 
 

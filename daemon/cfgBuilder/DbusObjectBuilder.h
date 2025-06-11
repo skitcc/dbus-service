@@ -2,7 +2,7 @@
 #define BASE_BUILDER_H
 
 #include "cfgRead/ConcreteReader.h"
-#include "dbus-objects/TimeoutObject.h"
+#include "common/cfgDefines.h"
 #include "common/Exceptions.h"
 
 #include <memory>
@@ -12,10 +12,6 @@
 
 class BaseDbusObjectBuilder {
 protected:
-    using VariantKey = std::string;
-    using VariantValue = std::variant<int, std::string>;
-
-    using Field = std::pair<VariantKey, VariantValue>;
 
 public:
     BaseDbusObjectBuilder() = default;

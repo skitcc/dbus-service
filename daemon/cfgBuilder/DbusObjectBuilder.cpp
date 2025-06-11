@@ -18,7 +18,7 @@ void DbusObjectBuilder::build() {
 }
 
  
-std::map<typename DbusObjectBuilder::VariantKey, typename DbusObjectBuilder::VariantValue> DbusObjectBuilder::getBuiltConfig() {
+std::map<VariantKey, VariantValue> DbusObjectBuilder::getBuiltConfig() {
     build();
     return m_builtConfig;
 }

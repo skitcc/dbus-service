@@ -12,12 +12,10 @@ class BaseDbusObject : public sdbus::AdaptorInterfaces<com::system::configuratio
     using VariantValue = std::variant<int, std::string>;
 
 public:
-    BaseDbusObject() = default;
     BaseDbusObject(sdbus::IConnection& connection, sdbus::ObjectPath objectPath);
 
     void setConfiguration(const FileConfiguration& conf);
-    virtual void specificBehaviour() = 0;
-    virtual ~BaseDbusObject();
+    ~BaseDbusObject();
     
 protected:
     void ChangeConfiguration(const std::string& key, const sdbus::Variant& value) override;
