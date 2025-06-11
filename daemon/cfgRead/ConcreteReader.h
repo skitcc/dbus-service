@@ -16,7 +16,7 @@ public:
     ConcreteReader(const std::string_view& filename);
     std::optional<Field> nextField() override;
     void setFile(const std::filesystem::path& path) override;
-    cfgType readMeta() override;
+    std::string readMeta() override;
 
 private:
     std::ifstream m_stream;

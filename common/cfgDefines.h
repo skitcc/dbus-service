@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <vector>
 #include <map>
-#include <tuple>
 #include <sdbus-c++/Types.h>
 
 enum class cfgType : size_t{
@@ -19,8 +18,9 @@ using Field = std::pair<VariantKey, VariantValue>;
 
 using FileConfiguration = std::map<VariantKey, VariantValue>;
 
-using DbusObjectsConfigurations = std::vector<std::tuple<sdbus::ObjectPath, cfgType, std::map<VariantKey, VariantValue>>>;
+using DbusObjectsConfigurations = std::vector<std::pair<sdbus::ObjectPath, std::map<VariantKey, VariantValue>>>;
 
+using ClientConfiguration = std::pair<sdbus::ObjectPath, cfgType>;
 
 
 #endif

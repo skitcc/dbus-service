@@ -1,7 +1,8 @@
 #include "TimeoutProxy.h"
 #include <iostream>
 
-TimeoutProxy::TimeoutProxy(sdbus::ServiceName serviceName, sdbus::ObjectPath objectPath) : BaseProxy(serviceName, objectPath) {}
+TimeoutProxy::TimeoutProxy(sdbus::IConnection& connection,sdbus::ServiceName serviceName, sdbus::ObjectPath objectPath) 
+    : BaseProxy(connection, serviceName, objectPath) {}
 
 
 
@@ -10,7 +11,6 @@ void TimeoutProxy::specificBehaviour() {
         m_timerThread = std::thread(&TimeoutProxy::timerLoop, this);
     }
 }
-
 
 void TimeoutProxy::timerLoop() {
     while (m_running) {
@@ -39,5 +39,12 @@ void TimeoutProxy::timerLoop() {
         std::cout << currentPhrase << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(currentTimeout));
 
+    }
+}
+
+TimeoutProxy::~TimeoutProxy() {
+    m_running = false;
+    if (m_timerThread.joinable()) {
+        m_timerThread.join();
     }
 }

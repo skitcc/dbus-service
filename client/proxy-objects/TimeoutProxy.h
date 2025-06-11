@@ -6,7 +6,7 @@
 
 class TimeoutProxy : public BaseProxy {
 public:
-    TimeoutProxy(sdbus::ServiceName serviceName, sdbus::ObjectPath objectPath);
+    TimeoutProxy(sdbus::IConnection& connection, sdbus::ServiceName serviceName, sdbus::ObjectPath objectPath);
 
     void specificBehaviour() override;
 

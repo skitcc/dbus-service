@@ -1,0 +1,10 @@
+[
+    {
+        "ObjectPath": "/com/system/configurationManager/Application/timeout1_conf",
+        "ObjectType": "Timeout"
+    },
+    {
+        "ObjectPath": "/com/system/configurationManager/Application/timeout_conf",
+        "ObjectType": "Timeout"
+    }
+]

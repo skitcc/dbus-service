@@ -12,3 +12,7 @@ const std::string dbus_daemon::Config::getBaseObjectPath() {
 const std::string_view dbus_daemon::Config::getConfigurationDir() {
     return m_configurationDir;
 }
+
+const std::filesystem::path dbus_daemon::Config::getClientConfigPath() {
+    return m_clientConfigPath;
+}

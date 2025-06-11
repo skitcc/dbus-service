@@ -4,6 +4,8 @@ subdir('cfgBuilder')
 subdir('service')
 subdir('serviceManager')
 
+
+
 daemon_deps = [
     dbusObjects_core_dep,
     reader_core_dep,

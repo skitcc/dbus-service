@@ -16,8 +16,7 @@ ConcreteReader::ConcreteReader(const std::string_view& filename) {
 }
 
 void ConcreteReader::setFile(const std::filesystem::path& path) {
-    if (m_stream.is_open())
-        throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
+    m_stream.close();
 
     m_stream.open(path);
 
@@ -67,7 +66,7 @@ std::optional<Field> ConcreteReader::nextField() {
     return field;
 }
 
-cfgType ConcreteReader::readMeta() {
+std::string ConcreteReader::readMeta() {
     m_stream.seekg(0);
     std::string metaBuffer{};
 
@@ -86,7 +85,7 @@ cfgType ConcreteReader::readMeta() {
     if (it == m_relations.end()) {
         throw UnsupportedConfiguration(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
-
+    std::string result = metaBuffer;
     if (!std::getline(m_stream, metaBuffer)) {
         throw FileException(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
     }
@@ -94,7 +93,7 @@ cfgType ConcreteReader::readMeta() {
     if (metaBuffer != META_FOOTER)
         throw MetaSectionError(__FILE__, typeid(ConcreteReader).name(), __FUNCTION__);
 
-    return it->second;
+    return result;
 }
 
 void ConcreteReader::readField(std::stringstream& stream) {
