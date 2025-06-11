@@ -8,6 +8,10 @@ BaseProxy::BaseProxy(sdbus::ServiceName serviceName, sdbus::ObjectPath objectPat
 }
 
 
+void BaseProxy::onConfigurationChanged(const std::map<std::string, sdbus::Variant>& configuration) {
+    
+}
+
 
 BaseProxy::~BaseProxy() {
     unregisterProxy();

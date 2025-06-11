@@ -21,7 +21,6 @@ protected:
     void ChangeConfiguration(const std::string& key, const sdbus::Variant& value) override;
     std::map<std::string, sdbus::Variant> GetConfiguration() override;
     FileConfiguration m_conf;
-
 };
 
 
