@@ -18,43 +18,57 @@ namespace Application {
 class Configuration_adaptor
 {
 public:
-    static constexpr const char* INTERFACE_NAME = "com.system.configurationManager.Application.Configuration";
+    static constexpr const char *INTERFACE_NAME
+        = "com.system.configurationManager.Application.Configuration";
 
 protected:
-    Configuration_adaptor(sdbus::IObject& object)
+    Configuration_adaptor(sdbus::IObject &object)
         : m_object(object)
-    {
-    }
+    {}
 
-    Configuration_adaptor(const Configuration_adaptor&) = delete;
-    Configuration_adaptor& operator=(const Configuration_adaptor&) = delete;
-    Configuration_adaptor(Configuration_adaptor&&) = delete;
-    Configuration_adaptor& operator=(Configuration_adaptor&&) = delete;
+    Configuration_adaptor(const Configuration_adaptor &) = delete;
+    Configuration_adaptor &operator=(const Configuration_adaptor &) = delete;
+    Configuration_adaptor(Configuration_adaptor &&) = delete;
+    Configuration_adaptor &operator=(Configuration_adaptor &&) = delete;
 
     ~Configuration_adaptor() = default;
 
     void registerAdaptor()
     {
-        m_object.addVTable( sdbus::registerMethod("ChangeConfiguration").withInputParamNames("key", "value").implementedAs([this](const std::string& key, const sdbus::Variant& value){ return this->ChangeConfiguration(key, value); })
-                          , sdbus::registerMethod("GetConfiguration").withOutputParamNames("configuration").implementedAs([this](){ return this->GetConfiguration(); })
-                          , sdbus::registerSignal("ConfigurationChanged").withParameters<std::map<std::string, sdbus::Variant>>("configuration")
-                          ).forInterface(INTERFACE_NAME);
+        m_object
+            .addVTable(sdbus::registerMethod("ChangeConfiguration")
+                           .withInputParamNames("key", "value")
+                           .implementedAs(
+                               [this](const std::string &key, const sdbus::Variant &value) {
+            return this->ChangeConfiguration(key, value);
+        }),
+                       sdbus::registerMethod("GetConfiguration")
+                           .withOutputParamNames("configuration")
+                           .implementedAs([this]() { return this->GetConfiguration(); }),
+                       sdbus::registerSignal("ConfigurationChanged")
+                           .withParameters<std::map<std::string, sdbus::Variant>>("configuration"))
+            .forInterface(INTERFACE_NAME);
     }
 
 public:
-    void emitConfigurationChanged(const std::map<std::string, sdbus::Variant>& configuration)
+    void emitConfigurationChanged(const std::map<std::string, sdbus::Variant> &configuration)
     {
-        m_object.emitSignal("ConfigurationChanged").onInterface(INTERFACE_NAME).withArguments(configuration);
+        m_object.emitSignal("ConfigurationChanged")
+            .onInterface(INTERFACE_NAME)
+            .withArguments(configuration);
     }
 
 private:
-    virtual void ChangeConfiguration(const std::string& key, const sdbus::Variant& value) = 0;
+    virtual void ChangeConfiguration(const std::string &key, const sdbus::Variant &value) = 0;
     virtual std::map<std::string, sdbus::Variant> GetConfiguration() = 0;
 
 private:
-    sdbus::IObject& m_object;
+    sdbus::IObject &m_object;
 };
 
-}}}} // namespaces
+}
+}
+}
+} // namespaces
 
 #endif

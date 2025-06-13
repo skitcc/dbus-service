@@ -1,7 +1,7 @@
 #include "serviceManager/ServiceManager.h"
 
-
-int main() {
+int main()
+{
     std::unique_ptr<ServiceManager> serviceManager = std::make_unique<ServiceManager>();
     serviceManager->runApplication();
 }

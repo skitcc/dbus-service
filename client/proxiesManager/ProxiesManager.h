@@ -4,7 +4,8 @@
 #include "proxiesBuilder/ProxiesBuilder.h"
 #include "proxiesComposite/ProxyComposite.h"
 
-class ProxiesManager {
+class ProxiesManager
+{
 public:
     ProxiesManager();
 
@@ -14,6 +15,5 @@ private:
     std::shared_ptr<ProxiesBuilder> m_proxiesBuilder;
     std::shared_ptr<ProxyComposite> m_compositeProxies;
 };
-
 
 #endif

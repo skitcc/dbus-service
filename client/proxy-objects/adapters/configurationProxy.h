@@ -18,32 +18,39 @@ namespace Application {
 class Configuration_proxy
 {
 public:
-    static constexpr const char* INTERFACE_NAME = "com.system.configurationManager.Application.Configuration";
+    static constexpr const char *INTERFACE_NAME
+        = "com.system.configurationManager.Application.Configuration";
 
 protected:
-    Configuration_proxy(sdbus::IProxy& proxy)
+    Configuration_proxy(sdbus::IProxy &proxy)
         : m_proxy(proxy)
-    {
-    }
+    {}
 
-    Configuration_proxy(const Configuration_proxy&) = delete;
-    Configuration_proxy& operator=(const Configuration_proxy&) = delete;
-    Configuration_proxy(Configuration_proxy&&) = delete;
-    Configuration_proxy& operator=(Configuration_proxy&&) = delete;
+    Configuration_proxy(const Configuration_proxy &) = delete;
+    Configuration_proxy &operator=(const Configuration_proxy &) = delete;
+    Configuration_proxy(Configuration_proxy &&) = delete;
+    Configuration_proxy &operator=(Configuration_proxy &&) = delete;
 
     ~Configuration_proxy() = default;
 
     void registerProxy()
     {
-        m_proxy.uponSignal("ConfigurationChanged").onInterface(INTERFACE_NAME).call([this](const std::map<std::string, sdbus::Variant>& configuration){ this->onConfigurationChanged(configuration); });
+        m_proxy.uponSignal("ConfigurationChanged")
+            .onInterface(INTERFACE_NAME)
+            .call([this](const std::map<std::string, sdbus::Variant> &configuration) {
+            this->onConfigurationChanged(configuration);
+        });
     }
 
-    virtual void onConfigurationChanged(const std::map<std::string, sdbus::Variant>& configuration) = 0;
+    virtual void onConfigurationChanged(const std::map<std::string, sdbus::Variant> &configuration)
+        = 0;
 
 public:
-    void ChangeConfiguration(const std::string& key, const sdbus::Variant& value)
+    void ChangeConfiguration(const std::string &key, const sdbus::Variant &value)
     {
-        m_proxy.callMethod("ChangeConfiguration").onInterface(INTERFACE_NAME).withArguments(key, value);
+        m_proxy.callMethod("ChangeConfiguration")
+            .onInterface(INTERFACE_NAME)
+            .withArguments(key, value);
     }
 
     std::map<std::string, sdbus::Variant> GetConfiguration()
@@ -54,9 +61,12 @@ public:
     }
 
 private:
-    sdbus::IProxy& m_proxy;
+    sdbus::IProxy &m_proxy;
 };
 
-}}}} // namespaces
+}
+}
+}
+} // namespaces
 
 #endif

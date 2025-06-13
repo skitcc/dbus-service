@@ -2,20 +2,20 @@
 #define CONCRETE_READER_H
 
 #include "BaseReader.h"
-#include <optional>
-#include <string>
-#include <sstream>
-#include <string_view>
 #include <fstream>
+#include <optional>
 #include <queue>
+#include <sstream>
+#include <string>
+#include <string_view>
 
-
-class ConcreteReader final: public BaseReader {
+class ConcreteReader final: public BaseReader
+{
 public:
     ConcreteReader() = default;
-    ConcreteReader(const std::string_view& filename);
+    ConcreteReader(const std::string_view &filename);
     std::optional<Field> nextField() override;
-    void setFile(const std::filesystem::path& path) override;
+    void setFile(const std::filesystem::path &path) override;
     std::string readMeta() override;
 
 private:
@@ -23,14 +23,11 @@ private:
 
     std::queue<Field> m_fieldQueue;
 
-    void readField(std::stringstream& stream);
+    void readField(std::stringstream &stream);
 
     void lineIterator();
 
-    friend std::istream& operator>>(std::istream& stream, VariantValue& val);
+    friend std::istream &operator>>(std::istream &stream, VariantValue &val);
 };
 
-
-
 #endif
-    

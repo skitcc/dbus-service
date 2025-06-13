@@ -4,8 +4,8 @@
 #include "cfgBuilder/ServiceDirector.h"
 #include "service/Service.h"
 
-
-class ServiceManager {
+class ServiceManager
+{
 public:
     ServiceManager();
 
@@ -15,6 +15,5 @@ private:
     std::shared_ptr<ServiceBuilder> m_serviceBuilder;
     std::shared_ptr<Service> m_service;
 };
-
 
 #endif

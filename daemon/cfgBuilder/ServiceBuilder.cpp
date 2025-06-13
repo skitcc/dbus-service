@@ -1,18 +1,19 @@
 #include "ServiceBuilder.h"
-#include <sdbus-c++/Types.h>
 #include "common/Config.h"
 #include "common/ObjectInfoStorage.h"
 #include <iostream>
+#include <sdbus-c++/Types.h>
 
-
-ServiceBuilder::ServiceBuilder() {
+ServiceBuilder::ServiceBuilder()
+{
     m_reader = std::make_shared<ConcreteReader>();
     m_relations = {
         {"Timeout", cfgType::TIMEOUT},
     };
 }
 
-bool ServiceBuilder::build() {
+bool ServiceBuilder::build()
+{
     bool builtCorrect = true;
 
     if (!collectAllConfigs()) {
@@ -21,21 +22,22 @@ bool ServiceBuilder::build() {
     }
 
     std::shared_ptr<BaseDbusObjectBuilder> configBuilder = std::make_shared<DbusObjectBuilder>();
-    
+
     auto objectStorage = ObjectInfoStorage::instance();
 
     boost::json::array arrayForClient;
     std::ofstream clientFile(dbus_daemon::Config::getClientConfigPath());
 
     try {
-        for (const auto& path : m_configPaths) {
+        for (const auto &path: m_configPaths) {
             std::string filename = path.filename().string();
             std::replace(filename.begin(), filename.end(), '.', '_');
             if (filename.find_last_of('.') != std::string::npos) {
                 filename = filename.substr(0, filename.find_last_of('.'));
             }
-            sdbus::ObjectPath currentPath = sdbus::ObjectPath{dbus_daemon::Config::getBaseObjectPath() + "/" + filename};
-            
+            sdbus::ObjectPath currentPath = sdbus::ObjectPath{
+                dbus_daemon::Config::getBaseObjectPath() + "/" + filename};
+
             m_reader->setFile(path);
 
             auto cfgType = m_reader->readMeta();
@@ -47,27 +49,31 @@ bool ServiceBuilder::build() {
             arrayForClient.push_back(object);
 
             configBuilder->setBuilderParams(m_reader);
-            
+
             auto config = configBuilder->getBuiltConfig();
             objectStorage->addDbusConfiguration(currentPath, config);
         }
         pretty_print(clientFile, arrayForClient);
-    } catch(...) {
+    }
+    catch (...) {
         builtCorrect = false;
     }
     return builtCorrect;
 }
 
-
-std::vector<std::shared_ptr<BaseDbusObject>> ServiceBuilder::getConfiguratedObjects() {
+std::vector<std::shared_ptr<BaseDbusObject>> ServiceBuilder::getConfiguratedObjects()
+{
     return m_configuratedObjects;
 }
 
-bool ServiceBuilder::collectAllConfigs() {
-    if (!std::filesystem::is_directory(dbus_daemon::Config::getConfigurationDir()))
+bool ServiceBuilder::collectAllConfigs()
+{
+    if (!std::filesystem::is_directory(dbus_daemon::Config::getConfigurationDir())) {
         return false;
+    }
 
-    for (const auto& entry : std::filesystem::directory_iterator(dbus_daemon::Config::getConfigurationDir())) {
+    for (const auto &entry:
+         std::filesystem::directory_iterator(dbus_daemon::Config::getConfigurationDir())) {
         if (entry.is_regular_file()) {
             m_configPaths.push_back(entry.path());
         }
@@ -75,12 +81,11 @@ bool ServiceBuilder::collectAllConfigs() {
     return true;
 }
 
-void pretty_print(std::ostream& os, const boost::json::value& jv, int indent, int indent_size) {
+void pretty_print(std::ostream &os, const boost::json::value &jv, int indent, int indent_size)
+{
     using namespace boost::json;
 
-    auto write_indent = [&os](int level, int size) {
-        os << std::string(level * size, ' ');
-    };
+    auto write_indent = [&os](int level, int size) { os << std::string(level * size, ' '); };
 
     if (jv.is_null()) {
         os << "null";
@@ -90,9 +95,9 @@ void pretty_print(std::ostream& os, const boost::json::value& jv, int indent, in
         os << jv;
     } else if (jv.is_string()) {
         std::string str = std::string(jv.as_string());
-        os << "\"" << str << "\""; 
+        os << "\"" << str << "\"";
     } else if (jv.is_array()) {
-        const array& arr = jv.as_array();
+        const array &arr = jv.as_array();
         if (arr.empty()) {
             os << "[]";
             return;
@@ -109,14 +114,14 @@ void pretty_print(std::ostream& os, const boost::json::value& jv, int indent, in
         write_indent(indent, indent_size);
         os << "]";
     } else if (jv.is_object()) {
-        const object& obj = jv.as_object();
+        const object &obj = jv.as_object();
         if (obj.empty()) {
             os << "{}";
             return;
         }
         os << "{\n";
         size_t i = 0;
-        for (const auto& [key, value] : obj) {
+        for (const auto &[key, value]: obj) {
             write_indent(indent + 1, indent_size);
             os << "\"" << key << "\": ";
             pretty_print(os, value, indent + 1, indent_size);

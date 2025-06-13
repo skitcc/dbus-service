@@ -3,20 +3,16 @@
 
 #include "BaseProxyReader.h"
 
-
-class PathTypeJsonReader : public JsonReader {
+class PathTypeJsonReader: public JsonReader
+{
 public:
-    explicit PathTypeJsonReader(const std::filesystem::path& path);
+    explicit PathTypeJsonReader(const std::filesystem::path &path);
 
     std::optional<ClientConfiguration> nextObject() override;
-    void setFile(const std::filesystem::path& path) override;
-
+    void setFile(const std::filesystem::path &path) override;
 
 protected:
-    void parseJson(const std::filesystem::path& path) override;
-
+    void parseJson(const std::filesystem::path &path) override;
 };
-
-
 
 #endif

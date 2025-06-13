@@ -4,9 +4,12 @@
 #include "BaseProxy.h"
 #include <thread>
 
-class TimeoutProxy : public BaseProxy {
+class TimeoutProxy: public BaseProxy
+{
 public:
-    TimeoutProxy(sdbus::IConnection& connection, sdbus::ServiceName serviceName, sdbus::ObjectPath objectPath);
+    TimeoutProxy(sdbus::IConnection &connection,
+                 sdbus::ServiceName serviceName,
+                 sdbus::ObjectPath objectPath);
 
     void specificBehaviour() override;
 
@@ -17,7 +20,5 @@ private:
     std::thread m_timerThread;
     bool m_running{true};
 };
-
-
 
 #endif

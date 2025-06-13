@@ -2,8 +2,8 @@
 
 #include "serviceManager/ServiceManager.h"
 
-
-int main() {
+int main()
+{
     ServiceManager serviceManager;
 
     serviceManager.runApplication();

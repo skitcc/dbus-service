@@ -1,29 +1,28 @@
 #include "ProxiesBuilder.h"
 #include "boost/json.hpp"
-#include <fstream>
 #include "common/Config.h"
 #include "common/Exceptions.h"
+#include <fstream>
 
-
-ProxiesBuilder::ProxiesBuilder() {
+ProxiesBuilder::ProxiesBuilder()
+{
     m_reader = std::make_shared<PathTypeJsonReader>(dbus_daemon::Config::getClientConfigPath());
 }
 
-
-bool ProxiesBuilder::build() {
+bool ProxiesBuilder::build()
+{
     try {
         while (auto object = m_reader->nextObject()) {
             m_proxiesConfigurations.push_back(object.value());
         }
         return true;
-    } catch(...) {
+    }
+    catch (...) {
         return false;
     }
 }
 
-
-const std::vector<ClientConfiguration>& ProxiesBuilder::getProxiesConfigurations() {
+const std::vector<ClientConfiguration> &ProxiesBuilder::getProxiesConfigurations()
+{
     return m_proxiesConfigurations;
 }
-
-

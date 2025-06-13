@@ -4,11 +4,10 @@
 #include "ProxiesBuilder.h"
 #include <memory>
 
-class ProxiesDirector {
+class ProxiesDirector
+{
 public:
     static bool create(std::shared_ptr<ProxiesBuilder> builder);
 };
-
-
 
 #endif

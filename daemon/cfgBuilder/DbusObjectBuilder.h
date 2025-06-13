@@ -2,17 +2,16 @@
 #define BASE_BUILDER_H
 
 #include "cfgRead/ConcreteReader.h"
-#include "common/cfgDefines.h"
 #include "common/Exceptions.h"
+#include "common/cfgDefines.h"
 
-#include <memory>
 #include <functional>
+#include <memory>
 #include <sdbus-c++/Types.h>
 
-
-class BaseDbusObjectBuilder {
+class BaseDbusObjectBuilder
+{
 protected:
-
 public:
     BaseDbusObjectBuilder() = default;
 
@@ -21,23 +20,20 @@ public:
 
     virtual void build() = 0;
     virtual std::map<VariantKey, VariantValue> getBuiltConfig() = 0;
+
 protected:
     std::shared_ptr<BaseReader> m_reader{};
     std::map<VariantKey, VariantValue> m_builtConfig{};
 };
 
-class DbusObjectBuilder : public BaseDbusObjectBuilder {
+class DbusObjectBuilder: public BaseDbusObjectBuilder
+{
 public:
     DbusObjectBuilder() = default;
     void setBuilderParams(std::shared_ptr<BaseReader> reader) override;
     void build() override;
 
     std::map<VariantKey, VariantValue> getBuiltConfig() override;
-
 };
-
-
-
-
 
 #endif

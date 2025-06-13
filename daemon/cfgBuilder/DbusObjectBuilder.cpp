@@ -1,13 +1,13 @@
 #include "DbusObjectBuilder.h"
 #include <iostream>
 
-
-void DbusObjectBuilder::setBuilderParams(std::shared_ptr<BaseReader> reader) {
+void DbusObjectBuilder::setBuilderParams(std::shared_ptr<BaseReader> reader)
+{
     m_reader = reader;
 }
 
-
-void DbusObjectBuilder::build() {
+void DbusObjectBuilder::build()
+{
     std::map<VariantKey, VariantValue> currentConfig;
     auto field = m_reader->nextField();
     while (field.has_value()) {
@@ -17,8 +17,8 @@ void DbusObjectBuilder::build() {
     m_builtConfig = std::move(currentConfig);
 }
 
- 
-std::map<VariantKey, VariantValue> DbusObjectBuilder::getBuiltConfig() {
+std::map<VariantKey, VariantValue> DbusObjectBuilder::getBuiltConfig()
+{
     build();
     return m_builtConfig;
 }
