@@ -3,9 +3,9 @@
 
 
 gdbus call -e -d com.system.configurationManager \
-  -o /com/system/configurationManager/Application/timeout1_conf \
+  -o /com/system/configurationManager/Application/timeout_conf \
   -m com.system.configurationManager.Application.Configuration.ChangeConfiguration \
-  "TimeoutPhrase" "<'father'>"
+  "TimeoutPhrase" "<'mother'>"
 
 # gdbus call -e -d com.system.configurationManager \
 #   -o /com/system/configurationManager/Application/timeout_conf \
