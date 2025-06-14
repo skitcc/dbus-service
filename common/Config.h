@@ -14,6 +14,7 @@ public:
     static const std::string getBaseObjectPath();
     static const std::string_view getConfigurationDir();
     static const std::filesystem::path getClientConfigPath();
+    static const std::vector<std::string_view> getValidKeysForConfigType(std::string_view configType);
 
 private:
     static const inline sdbus::ServiceName m_serviceName{"com.system.configurationManager"};
@@ -22,6 +23,9 @@ private:
     static const inline std::string_view m_configurationDir{"../data/"};
     static const inline std::filesystem::path m_clientConfigPath{
         "../client_settings/settings.json"};
+
+    static const inline std::unordered_map<std::string_view, std::vector<std::string_view>>
+        m_validKeysByConfigType{{"Timeout", {"Timeout", "TimeoutPhrase"}}};
 };
 
 }

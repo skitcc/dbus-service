@@ -3,5 +3,12 @@
 
 bool ServiceDirector::create(std::shared_ptr<ServiceBuilder> serviceBuilder)
 {
-    return serviceBuilder->build();
+    bool res;
+    try {
+        res = serviceBuilder->build();
+    }
+    catch (const BaseException &ex) {
+        ex.what();
+    }
+    return res;
 }

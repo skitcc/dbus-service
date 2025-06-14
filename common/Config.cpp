@@ -19,3 +19,13 @@ const std::filesystem::path dbus_daemon::Config::getClientConfigPath()
 {
     return m_clientConfigPath;
 }
+
+const std::vector<std::string_view> dbus_daemon::Config::getValidKeysForConfigType(
+    std::string_view configType)
+{
+    auto it = m_validKeysByConfigType.find(configType);
+    if (it != m_validKeysByConfigType.end()) {
+        return it->second;
+    }
+    return {};
+}

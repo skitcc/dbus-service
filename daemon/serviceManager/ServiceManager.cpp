@@ -15,5 +15,10 @@ void ServiceManager::runApplication()
     auto configuratedObjects = m_serviceBuilder->getConfiguratedObjects();
 
     m_service->addConfiguratedObjects(std::move(configuratedObjects));
-    m_service->run();
+    try {
+        m_service->run();
+    }
+    catch (const BaseException &ex) {
+        ex.what();
+    }
 }

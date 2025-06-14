@@ -21,7 +21,7 @@ void PathTypeJsonReader::parseJson(const std::filesystem::path &path)
 {
     m_stream.open(path);
     if (!m_stream.is_open()) {
-        throw FileException(__FILE__, typeid(PathTypeJsonReader).name(), __FUNCTION__);
+        throw FileException(__FILE__, typeid(PathTypeJsonReader).name(), __FUNCTION__, __LINE__);
     }
 
     std::stringstream buffer;
@@ -32,11 +32,11 @@ void PathTypeJsonReader::parseJson(const std::filesystem::path &path)
     boost::json::error_code ec;
     boost::json::value jv = boost::json::parse(content, ec);
     if (ec) {
-        throw FileException(__FILE__, typeid(PathTypeJsonReader).name(), __FUNCTION__);
+        throw FileException(__FILE__, typeid(PathTypeJsonReader).name(), __FUNCTION__, __LINE__);
     }
 
     if (!jv.is_array()) {
-        throw FileException(__FILE__, typeid(PathTypeJsonReader).name(), __FUNCTION__);
+        throw FileException(__FILE__, typeid(PathTypeJsonReader).name(), __FUNCTION__, __LINE__);
     }
 
     m_array = jv.as_array();

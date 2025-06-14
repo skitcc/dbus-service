@@ -18,7 +18,9 @@ public:
         return singleInstance;
     }
 
-    void addDbusConfiguration(const sdbus::ObjectPath &objPath, const FileConfiguration &fileConfig);
+    void addDbusConfiguration(const sdbus::ObjectPath &objPath,
+                              const FileConfiguration &fileConfig,
+                              const std::string &cfgType);
 
     const DbusObjectsConfigurations &getStorageData();
 

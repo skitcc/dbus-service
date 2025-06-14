@@ -39,11 +39,16 @@ bool ServiceBuilder::build()
                 dbus_daemon::Config::getBaseObjectPath() + "/" + filename};
 
             m_reader->setFile(path);
-
-            auto cfgType = m_reader->readMeta();
+            std::string type{};
+            try {
+                type = m_reader->readMeta();
+            }
+            catch (const BaseException &ex) {
+                throw ex;
+            }
             boost::json::object object;
             object["ObjectPath"] = std::string(currentPath);
-            object["ObjectType"] = std::string(cfgType);
+            object["ObjectType"] = std::string(type);
 
             std::cout << "Adding object: " << boost::json::serialize(object) << std::endl;
             arrayForClient.push_back(object);
@@ -51,12 +56,13 @@ bool ServiceBuilder::build()
             configBuilder->setBuilderParams(m_reader);
 
             auto config = configBuilder->getBuiltConfig();
-            objectStorage->addDbusConfiguration(currentPath, config);
+            objectStorage->addDbusConfiguration(currentPath, config, type);
         }
         pretty_print(clientFile, arrayForClient);
     }
-    catch (...) {
+    catch (const BaseException &ex) {
         builtCorrect = false;
+        throw ex;
     }
     return builtCorrect;
 }

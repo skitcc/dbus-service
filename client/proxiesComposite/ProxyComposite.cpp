@@ -24,7 +24,10 @@ void ProxyComposite::registrateProxies()
     for (const auto &[objectPath, type]: m_clientConfigurations) {
         auto it = m_relations.find(type);
         if (it == m_relations.end()) {
-            throw UnsupportedConfiguration(__FILE__, typeid(ProxyComposite).name(), __FUNCTION__);
+            throw UnsupportedConfiguration(__FILE__,
+                                           typeid(ProxyComposite).name(),
+                                           __FUNCTION__,
+                                           __LINE__);
         }
         auto proxyObject = it->second(*m_connection,
                                       dbus_daemon::Config::getServiceName(),
